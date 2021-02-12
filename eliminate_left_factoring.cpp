@@ -30,7 +30,10 @@ void eliminate_left_recursion(map<string, vector<string>> &non_terminals){
             }
         }
         if(left_recursive){
-            finals[non_terminal+"\'"].push_back("EPSILON");
+            finals[non_terminal+"\'"].push_back("epsilon");
+            if(beta.size() == 0){
+                finals[non_terminal].push_back(non_terminal+"\'");
+            }
             for(int i = 0; i < beta.size(); i++){
                 finals[non_terminal].push_back(beta[i]+non_terminal+"\'");
             }
@@ -55,6 +58,11 @@ void eliminate_left_recursion(map<string, vector<string>> &non_terminals){
     ofs.close();
 }
 
+void eliminate_left_factoring(map<string, vector<string>> non_terminals){
+    ofstream ofs;
+    ofs.open((INTERMEDIATE+"left_recursion_eliminated.txt"), fstream::out);
+
+}
 
 void getFirst(map<string, set<string>> &first, map<string, vector<string>> non_terminals, string current){
     for(auto it = non_terminals.begin(); it != non_terminals.end(); ++it){
@@ -78,6 +86,7 @@ void getGrammarToken(map<string, vector<string>> &non_terminals){
     char c;
     string s = "", non_terminal;
     while(ifs.get(c)){
+        if(c=='\n') continue;
         if(c==';'){
             non_terminals[non_terminal].push_back(s);
             s = "";
@@ -105,7 +114,7 @@ void trim(){
     ofs.open((INTERMEDIATE+"trimmed.txt"), fstream::out);
     char c;
     while(ifs.get(c)){
-        if(!isspace(c))
+        if(!isspace(c)||c=='\n')
             ofs << c;
     }
     ifs.close();
