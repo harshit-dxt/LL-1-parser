@@ -3,10 +3,76 @@
 #include<string.h>
 #include<set>
 #include<map>
+#include<unordered_map>
 #include<vector>
 using namespace std;
 
-void getGrammarToken(map<string, vector<string>> &non_terminals, string INTERMEDIATE){
+#define INTERMEDIATE string("./intermediate/")
+
+void eliminate_left_recursion(map<string, vector<string>> &non_terminals){
+    ofstream ofs;
+    ofs.open((INTERMEDIATE+"left_recursion_eliminated.txt"), fstream::out);
+
+    map<string, vector<string>> finals;
+    for(auto it = non_terminals.begin(); it != non_terminals.end(); ++it){
+        string non_terminal = it->first;
+        vector<string> productions = it->second;
+        vector<string> alpha;
+        vector<string> beta;
+        bool left_recursive = false;
+        for(int i = 0; i < productions.size(); ++i){
+            if(productions[i].find(non_terminal) == 0){
+                alpha.push_back(productions[i].substr(1));
+                left_recursive = true;
+            }
+            else{
+                beta.push_back(productions[i]);
+            }
+        }
+        if(left_recursive){
+            finals[non_terminal+"\'"].push_back("EPSILON");
+            for(int i = 0; i < beta.size(); i++){
+                finals[non_terminal].push_back(beta[i]+non_terminal+"\'");
+            }
+            for(int i = 0; i < alpha.size(); i++){
+                finals[non_terminal+"\'"].push_back(alpha[i]+non_terminal+"\'");
+            }
+        }
+        else{
+            finals[non_terminal] = productions;
+        }
+    }
+    non_terminals = finals;
+
+    for(auto it = non_terminals.begin(); it != non_terminals.end(); ++it){
+        vector<string> v = it->second;
+        ofs << it->first << ":";
+        for(int i = 0; i < v.size()-1;++i){
+            ofs << v[i] << "|";
+        }
+        ofs << v[v.size()-1] << ";\n";
+    }
+    ofs.close();
+}
+
+
+void getFirst(map<string, set<string>> &first, map<string, vector<string>> non_terminals, string current){
+    for(auto it = non_terminals.begin(); it != non_terminals.end(); ++it){
+        vector<string> productions = it->second;
+        for(int i = 0; i < productions.size(); ++i){
+            
+            if(non_terminals.find(productions[i])==non_terminals.end()){
+                first[productions[i]] = set<string>({productions[i]});
+            }
+        }
+    }
+}
+
+void acceptGrammar(map<string, vector<string>> non_terminals, string current){
+
+}
+
+void getGrammarToken(map<string, vector<string>> &non_terminals){
     ifstream ifs;
     ifs.open((INTERMEDIATE+"trimmed.txt"), fstream::in);
     char c;
@@ -29,10 +95,10 @@ void getGrammarToken(map<string, vector<string>> &non_terminals, string INTERMED
             s+=c;
         }
     }
-    
+    ifs.close();
 }
 
-void trim(string INTERMEDIATE){
+void trim(){
     ifstream ifs;
     ifs.open(("grammar.txt"), fstream::in);
     ofstream ofs;
@@ -42,18 +108,15 @@ void trim(string INTERMEDIATE){
         if(!isspace(c))
             ofs << c;
     }
+    ifs.close();
+    ofs.close();
 }
 
 int main(){
-    string INTERMEDIATE = "./intermediate/";
     map<string, vector<string>> non_terminals;
-    trim(INTERMEDIATE);
-    getGrammarToken(non_terminals, INTERMEDIATE);
-    for(auto it = non_terminals.begin(); it != non_terminals.end(); ++it){
-        vector<string> v = it->second;
-        for(int i = 0; i < v.size(); ++i){
-            cout << v[i] << endl;
-        }
-    }
+    map<string, set<string>> first;
+    trim();
+    getGrammarToken(non_terminals);
+    eliminate_left_recursion(non_terminals);
     return 0;
 }
