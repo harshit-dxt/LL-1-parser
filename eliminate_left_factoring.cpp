@@ -49,5 +49,11 @@ int main(){
     map<string, vector<string>> non_terminals;
     trim(INTERMEDIATE);
     getGrammarToken(non_terminals, INTERMEDIATE);
+    for(auto it = non_terminals.begin(); it != non_terminals.end(); ++it){
+        vector<string> v = it->second;
+        for(int i = 0; i < v.size(); ++i){
+            cout << v[i] << endl;
+        }
+    }
     return 0;
 }
