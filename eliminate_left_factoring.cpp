@@ -8,6 +8,7 @@
 using namespace std;
 
 #define INTERMEDIATE string("./intermediate/")
+#define EPSILON string("epsilon")
 
 void eliminate_left_recursion(map<string, vector<string>> &non_terminals){
     ofstream ofs;
@@ -22,7 +23,7 @@ void eliminate_left_recursion(map<string, vector<string>> &non_terminals){
         bool left_recursive = false;
         for(int i = 0; i < productions.size(); ++i){
             if(productions[i].find(non_terminal) == 0){
-                alpha.push_back(productions[i].substr(1));
+                alpha.push_back(productions[i].substr(non_terminal.length()));
                 left_recursive = true;
             }
             else{
@@ -62,16 +63,15 @@ void eliminate_left_factoring(map<string, vector<string>> non_terminals){
     ofstream ofs;
     ofs.open((INTERMEDIATE+"left_recursion_eliminated.txt"), fstream::out);
 
+    
 }
 
 void getFirst(map<string, set<string>> &first, map<string, vector<string>> non_terminals, string current){
     for(auto it = non_terminals.begin(); it != non_terminals.end(); ++it){
+        string x = it->first;
         vector<string> productions = it->second;
-        for(int i = 0; i < productions.size(); ++i){
-            
-            if(non_terminals.find(productions[i])==non_terminals.end()){
-                first[productions[i]] = set<string>({productions[i]});
-            }
+        if(productions[0].compare(EPSILON)){
+            first[x].insert(EPSILON);
         }
     }
 }
@@ -127,5 +127,6 @@ int main(){
     trim();
     getGrammarToken(non_terminals);
     eliminate_left_recursion(non_terminals);
+
     return 0;
 }
