@@ -3,12 +3,14 @@
 %}
 
 %%
-[0-9]+ {printf("Token: num Lexeme: %s\n", yytext);}
-[A-Za-z][A-Za-z0-9_]* {printf("Token: id Lexeme: %s\n", yytext);}
-.   {}
+[0-9]+ {printf("num ");}
+[A-Za-z][A-Za-z0-9_]* {printf("id ");}
+[+-/*()] {printf("%s ", yytext);}
+.   
 %%
 
 int main(){
     yylex();
+    printf("$");
     return 0;
 }
