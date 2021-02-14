@@ -1,8 +1,11 @@
 # Group_name: CG31.
-# Student information: Diali Kundu(1801055), Harshit Dixit (1801070).
+# Student information: 
+* Diali Kundu(1801055).
+*  Harshit Dixit (1801070).
 # contributions : 
 * Diali Kundu : left recursion removal function , parsing table create function.
-* Harshit Dixit : First and Follow set calculate functions, parser create function.
+* Harshit Dixit : First and Follow set calculate functions, parser create function , sample lex file.
+    It would be wrong to say that any function was implemented by one person completely, it took a lot of time and discussion on each person's part.
 # Creating Predictive Parser using c++
 * Clone the repository and excute the following commands.
 * g++ parser.cpp
