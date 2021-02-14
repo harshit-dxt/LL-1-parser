@@ -8,6 +8,7 @@
     It would be wrong to say that any function was implemented by one person completely, it took a lot of time and discussion on each person's part.
 # Creating Predictive Parser using c++
 * Clone the repository and excute the following commands.
+* create folder named "Intermediate".
 * g++ parser.cpp
 * lex lexer.l
 * gcc -o myScan lex.yy.c -ll
