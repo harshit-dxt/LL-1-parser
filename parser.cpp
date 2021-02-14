@@ -178,15 +178,28 @@ void parsing_table( unordered_map<string, set<string>> first , unordered_map<str
                 set<string>follow_values = follow[key];
                 for(auto k = follow_values.begin(); k != follow_values.end(); k++)
                 {
-                    parse_table[{key, *k }].insert(parse_table[{key, *k }].end() , productions[j].begin(), productions[j].end());
+                    if(parse_table.find({key, *k}) != parse_table.end())
+                        {
+                            cout<<"ERROR : NOT A LL1 grammar."<<"\n";
+                            return;
+                        }
+                        else{
+                            parse_table[{key, *k }].insert(parse_table[{key, *k }].end() , productions[j].begin(), productions[j].end());
+                        }
                 }
             }
             for(auto k = first_values.begin(); k != first_values.end(); k++)
             {
                 if(*k != EPSILON)
                 {
-                    parse_table[{key, *k }].insert(parse_table[{key, *k }].end() , productions[j].begin(), productions[j].end());
-                }
+                    if(parse_table.find({key, *k}) != parse_table.end())
+                        {
+                            cout<<"ERROR : NOT A LL1 grammar."<<"\n";
+                        }
+                        else{
+                            parse_table[{key, *k }].insert(parse_table[{key, *k }].end() , productions[j].begin(), productions[j].end());
+                        }
+                    }
             }
         }
     }
